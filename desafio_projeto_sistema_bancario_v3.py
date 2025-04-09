@@ -1,27 +1,32 @@
+import datetime  # Importa o módulo datetime para lidar com datas e horários
 
-import datetime
+# Constantes e estruturas iniciais
+AGENCIA = "0001"  # Número fixo da agência bancária
+usuarios = []     # Lista que armazena os usuários do sistema
+contas = []       # Lista que armazena as contas bancárias
 
-AGENCIA = "0001"
-usuarios = []
-contas = []
-
+# Função para buscar um usuário na lista pelo CPF
 def localizar_usuario(cpf, usuarios):
     for usuario in usuarios:
         if usuario["cpf"] == cpf:
-            return usuario
-    return None
+            return usuario  # Retorna o usuário se o CPF for encontrado
+    return None  # Retorna None se não encontrar o CPF
 
+# Função para criar um novo usuário e opcionalmente uma conta
 def criar_usuario(usuarios, contas):
     cpf = input("Informe o CPF do novo usuário: ").strip()
 
+    # Verifica se o CPF já está cadastrado
     if localizar_usuario(cpf, usuarios):
         print("⚠️  Usuário já cadastrado.")
         return
 
+    # Coleta os dados do novo usuário
     nome = input("Informe o nome completo: ").strip()
     data_nascimento = input("Informe a data de nascimento (dd-mm-aaaa): ").strip()
     endereco = input("Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ").strip()
 
+    # Cria o dicionário do usuário e adiciona à lista
     usuario = {
         "nome": nome,
         "data_nascimento": data_nascimento,
@@ -32,6 +37,7 @@ def criar_usuario(usuarios, contas):
     usuarios.append(usuario)
     print("✅ Usuário criado com sucesso!")
 
+    # Pergunta se o usuário deseja criar uma conta logo após o cadastro
     resposta = input("Deseja criar uma conta bancária para esse usuário agora? (s/n): ").lower()
     if resposta == 's':
         numero_conta = len(contas) + 1
@@ -45,6 +51,7 @@ def criar_usuario(usuarios, contas):
         contas.append(conta)
         print(f"✅ Conta criada com sucesso! Número da conta: {numero_conta}")
 
+# Função para criar uma nova conta para um usuário já existente
 def criar_conta(agencia, numero_conta, usuarios, contas):
     cpf = input("Informe o CPF do usuário: ")
     usuario = localizar_usuario(cpf, usuarios)
@@ -62,6 +69,7 @@ def criar_conta(agencia, numero_conta, usuarios, contas):
     else:
         print("❌ Usuário não encontrado. Conta não criada.")
 
+# Função para listar todas as contas cadastradas
 def listar_contas(contas):
     print("\n=========== CONTAS CADASTRADAS ===========\n")
     for conta in contas:
@@ -73,6 +81,7 @@ def listar_contas(contas):
         """)
     print("========================================\n")
 
+# Função para realizar depósito em uma conta
 def depositar(contas):
     numero_conta = int(input("Informe o número da conta: "))
     conta = localizar_conta(numero_conta, contas)
@@ -88,6 +97,7 @@ def depositar(contas):
     else:
         print("⚠️  Conta não encontrada.")
 
+# Função para realizar saque de uma conta
 def sacar(contas):
     numero_conta = int(input("Informe o número da conta: "))
     conta = localizar_conta(numero_conta, contas)
@@ -103,6 +113,7 @@ def sacar(contas):
     else:
         print("⚠️  Conta não encontrada.")
 
+# Função para exibir o extrato bancário da conta
 def exibir_extrato(contas):
     numero_conta = int(input("Informe o número da conta: "))
     conta = localizar_conta(numero_conta, contas)
@@ -122,23 +133,27 @@ def exibir_extrato(contas):
     else:
         print("⚠️  Conta não encontrada.")
 
+# Função auxiliar para localizar uma conta pelo número
 def localizar_conta(numero_conta, contas):
     for conta in contas:
         if conta["numero_conta"] == numero_conta:
             return conta
     return None
 
+# Função principal do programa
 def main():
     print("🚀  Bem-vindo ao sistema bancário!")
     cpf_inicial = input("Por favor, informe seu CPF para acessar o sistema: ").strip()
     usuario = localizar_usuario(cpf_inicial, usuarios)
 
+    # Se o CPF não estiver cadastrado, cria um novo usuário
     if not usuario:
         print("🔔  CPF não encontrado. Vamos criar um novo usuário.")
         criar_usuario(usuarios, contas)
     else:
         print(f"👤  Bem-vindo de volta, {usuario['nome']}!")
 
+    # Loop principal do menu
     while True:
         print("""
 ================ MENU ================
@@ -172,5 +187,6 @@ def main():
         else:
             print("❌ Opção inválida. Tente novamente.")
 
+# Garante que a função main() só será executada se o script for o principal
 if __name__ == "__main__":
     main()
